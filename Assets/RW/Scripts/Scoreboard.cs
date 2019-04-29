@@ -158,7 +158,7 @@ public class Scoreboard : MonoBehaviour
         string line;
 
         // Read the file and display it line by line.  
-        System.IO.StreamReader file = new System.IO.StreamReader(@"D:\Workshop\UNI\skipgram.txt");
+        System.IO.StreamReader file = new System.IO.StreamReader(@"C:\UNI\skipgram.txt");
         line = file.ReadLine();
 
         string[] subStrings = line.Split(' ');
