@@ -1,3 +1,5 @@
 Assets/SteamVR/*
+Assets/TextMesh Pro/*
 Library/*
-Temp/UnityLockfile
+Temp/*
+Logs/*
