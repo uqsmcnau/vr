@@ -143,13 +143,16 @@ class WordEmbedding
 
 public class Scoreboard : MonoBehaviour
 {
-    public TextMesh scoreboard;
+    public TextMeshPro scoreboard;
+    public Camera cam;
 
     private WordEmbedding[] embeddings;
     private int counter;
 
     private int count;
     private int dimensionality;
+
+    private WordEmbedding Target;
 
     // Start is called before the first frame update
     void Start()
@@ -194,9 +197,13 @@ public class Scoreboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        WordEmbedding Target = embeddings[counter%count];
-        Target.FindNN(embeddings, 10);
-        scoreboard.text = Target.ToString();
+        scoreboard.transform.rotation = Quaternion.LookRotation(scoreboard.transform.position - cam.transform.position);
+        if (counter%100 == 0)
+        {
+            Target = embeddings[(counter / 100) % count];
+            Target.FindNN(embeddings, 10);
+            scoreboard.text = Target.ToString();
+        }
         counter++;
     }
 }
