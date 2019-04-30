@@ -4,146 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-// helper class
-class WordEmbeddingDistance
+public class Scoreboard : Selectable
 {
-    string word;
-    double distance;
-
-    // Constructor
-    public WordEmbeddingDistance(string w, double d)
-    {
-        word = w;
-        distance = d;
-    }
-
-    public string GetWord()
-    {
-        return word;
-    }
-
-    public double GetDistance()
-    {
-        return distance;
-    }
-
-    // Instance Method
-    public override string ToString()
-    {
-        return "(" + word + ", " + distance + ")";
-    }
-
-    // Destructor
-    ~WordEmbeddingDistance()
-    {
-        // Some resource cleanup routines
-    }
-}
-
-// helper class
-class WordEmbedding
-{
-    string word;
-    double[] vectors;
-    WordEmbeddingDistance[] nearestNeighbours;
-
-    // Constructor
-    public WordEmbedding(string w, double[] v)
-    {
-        word = w;
-        vectors = v;
-    }
-
-    // Instance Method
-    public override string ToString()
-    {
-        string output = word;
-        if (nearestNeighbours != null)
-        {
-            for (int i = 0; i < nearestNeighbours.Length; i++)
-            {
-                if (nearestNeighbours[i] != null)
-                {
-                    output += "\n";
-                    output += nearestNeighbours[i].ToString();
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < vectors.Length; i++)
-            {
-                output += " ";
-                output += vectors[i];
-            }
-        }
-        return output;
-    }
-
-    public string GetWord()
-    {
-        return word;
-    }
-
-    public double[] GetVectors()
-    {
-        return vectors;
-    }
-
-    public void FindNN(WordEmbedding[] neighbours, int k)
-    {
-        nearestNeighbours = new WordEmbeddingDistance[k];
-        for (int i = 0; i < neighbours.Length; i++)
-        {
-            double distance = Distance(neighbours[i]);
-            WordEmbeddingDistance wed = new WordEmbeddingDistance(neighbours[i].GetWord(), distance);
-
-            for (int j = 0; j < k; j++)
-            {
-                if (nearestNeighbours[j] == null)
-                {
-                    nearestNeighbours[j] = wed;
-                    j = k;
-                }
-                else if (nearestNeighbours[j].GetDistance() > wed.GetDistance())
-                {
-                    WordEmbeddingDistance holder = nearestNeighbours[j];
-                    nearestNeighbours[j] = wed;
-                    wed = holder;
-                }
-            }
-        }
-    }
-
-    public WordEmbeddingDistance[] GetNN()
-    {
-        return nearestNeighbours;
-    }
-
-    public double Distance(WordEmbedding target)
-    {
-        if (target.vectors.Length != vectors.Length)
-        {
-            throw new ArgumentOutOfRangeException("Both WordEmbeddings must be of same dimensionality.");
-        }
-        double sum = 0;
-        for (int i = 0; i < vectors.Length; i++)
-        {
-            sum += ((vectors[i] - target.vectors[i]) * (vectors[i] - target.vectors[i]));
-        }
-        return Math.Sqrt(sum);
-    }
-
-    // Destructor
-    ~WordEmbedding()
-    {
-        // Some resource cleanup routines
-    }
-}
-
-public class Scoreboard : MonoBehaviour
-{
-    public TextMeshPro scoreboard;
+    public GameObject scoreboard;
+    public TextMeshPro text;
     public Camera cam;
 
     private WordEmbedding[] embeddings;
@@ -152,14 +16,23 @@ public class Scoreboard : MonoBehaviour
     private int count;
     private int dimensionality;
 
+    private bool preview;
+
     private WordEmbedding Target;
+
+    public GameObject optionPrefab;
+    private GameObject[] options;
+
+    private readonly int k = 10;
 
     // Start is called before the first frame update
     void Start()
     {
         counter = 0;
         string line;
+        preview = true;
 
+            
         // Read the file and display it line by line.  
         System.IO.StreamReader file = new System.IO.StreamReader(@"C:\UNI\skipgram.txt");
         line = file.ReadLine();
@@ -192,18 +65,69 @@ public class Scoreboard : MonoBehaviour
         file.Close();
 
         counter = 0;
+
+        UpdateTarget();
     }
 
     // Update is called once per frame
     void Update()
     {
-        scoreboard.transform.rotation = Quaternion.LookRotation(scoreboard.renderer.bounds.center - cam.transform.position);
-        if (counter%100 == 0)
+        scoreboard.transform.rotation = Quaternion.LookRotation(scoreboard.GetComponent<Renderer>().bounds.center - cam.transform.position);
+        if (preview && (counter%100 == 0))
         {
-            Target = embeddings[(counter / 100) % count];
-            Target.FindNN(embeddings, 10);
-            scoreboard.text = Target.ToString();
+            UpdateTarget();
         }
         counter++;
+    }
+
+    public void SetTarget(WordEmbedding we)
+    {
+        Target = we;
+        Target.FindNN(embeddings, k);
+        text.text = Target.GetWord();
+    }
+    
+    private void UpdateTarget()
+    {
+        Target = embeddings[(counter / 100) % count];
+        Target.FindNN(embeddings, k);
+        text.text = Target.GetWord();
+    }
+
+    public override void Select()
+    {
+        WordEmbeddingDistance[] NN = Target.GetNN();
+
+        if (preview)
+        {
+            preview = false;
+            scoreboard.SetActive(false);
+
+            options = new GameObject[k];
+
+            for (int i = 0; i < k; i++)
+            {
+                GameObject option = Instantiate(optionPrefab);
+                Option o = option.GetComponent<Option>();
+                o.cam = cam;
+                o.SetParent(this);
+                o.SetWordEmbedding(NN[i].getWordEmbedding());
+
+                option.transform.position = transform.position + new Vector3(
+                        (float)(5 * Math.Sin(((float)i) / ((float)k) * ((float)2 * Math.PI))),
+                        0.0f,
+                        (float)(5 * Math.Cos(((float)i) / ((float)k) * ((float)2 * Math.PI))));
+
+                options[i] = option;
+            }
+        } else
+        {
+            for (int i = 0; i < k; i++)
+            {
+                GameObject option = options[i];
+                Option o = option.GetComponent<Option>();
+                o.SetWordEmbedding(NN[i].getWordEmbedding());
+            }
+        }
     }
 }
