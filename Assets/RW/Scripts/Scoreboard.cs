@@ -197,7 +197,7 @@ public class Scoreboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scoreboard.transform.rotation = Quaternion.LookRotation(scoreboard.transform.position - cam.transform.position);
+        scoreboard.transform.rotation = Quaternion.LookRotation(scoreboard.renderer.bounds.center - cam.transform.position);
         if (counter%100 == 0)
         {
             Target = embeddings[(counter / 100) % count];
