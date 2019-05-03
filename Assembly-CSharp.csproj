@@ -108,12 +108,16 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\RW\Scripts\Accord.Math.xml" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
+    <None Include="Assets\RW\Scripts\Accord.MachineLearning.GPL.xml" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
+    <None Include="Assets\RW\Scripts\Accord.xml" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Bangers - OFL.txt" />
+    <None Include="Assets\RW\Scripts\Accord.Statistics.xml" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
@@ -122,9 +126,11 @@
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\RW\Scripts\Accord.Math.Core.xml" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\RW\Scripts\Accord.MachineLearning.xml" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
@@ -361,6 +367,24 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Statistics.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning.GPL">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.GPL.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math.Core">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.Core.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0f2/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

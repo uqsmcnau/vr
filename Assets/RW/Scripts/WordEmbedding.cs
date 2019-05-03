@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// helper class
 public class WordEmbedding
 {
-    private string word;
-    private double[] vectors;
+    string word;
+    double[] vectors;
     WordEmbeddingDistance[] nearestNeighbours;
+
+    double[] pca;
 
     // Constructor
     public WordEmbedding(string w, double[] v)
@@ -15,9 +18,9 @@ public class WordEmbedding
         word = w;
         vectors = v;
     }
-
+    
     // Instance Method
-    public override string ToString()
+    public override String ToString()
     {
         string output = word;
         if (nearestNeighbours != null)
@@ -26,7 +29,7 @@ public class WordEmbedding
             {
                 if (nearestNeighbours[i] != null)
                 {
-                    output += "\n";
+                    output += " ";
                     output += nearestNeighbours[i].ToString();
                 }
             }
@@ -42,7 +45,7 @@ public class WordEmbedding
         return output;
     }
 
-    public string GetWord()
+    public String GetWord()
     {
         return word;
     }
@@ -52,26 +55,46 @@ public class WordEmbedding
         return vectors;
     }
 
+    public void SetPCAVectors(double[] pca)
+    {
+        this.pca = pca;
+    }
+
+    public double[] GetPCAVectors()
+    {
+        return pca;
+    }
+
     public void FindNN(WordEmbedding[] neighbours, int k)
     {
         nearestNeighbours = new WordEmbeddingDistance[k];
         for (int i = 0; i < neighbours.Length; i++)
         {
-            double distance = Distance(neighbours[i]);
-            WordEmbeddingDistance wed = new WordEmbeddingDistance(neighbours[i], distance);
-
-            for (int j = 0; j < k; j++)
+            if (word != neighbours[i].GetWord())
             {
-                if (nearestNeighbours[j] == null)
+                double distance = Distance(neighbours[i]);
+                double[] pcadistance = new double[3];
+
+                for (int j = 0; j < 3; j++)
                 {
-                    nearestNeighbours[j] = wed;
-                    j = k;
+                    pcadistance[j] = pca[j] - neighbours[i].GetPCAVectors()[j];
                 }
-                else if (nearestNeighbours[j].GetDistance() > wed.GetDistance())
+
+                WordEmbeddingDistance wed = new WordEmbeddingDistance(neighbours[i], distance, pcadistance);
+
+                for (int j = 0; j < k; j++)
                 {
-                    WordEmbeddingDistance holder = nearestNeighbours[j];
-                    nearestNeighbours[j] = wed;
-                    wed = holder;
+                    if (nearestNeighbours[j] == null)
+                    {
+                        nearestNeighbours[j] = wed;
+                        j = k;
+                    }
+                    else if (nearestNeighbours[j].GetDistance() > wed.GetDistance())
+                    {
+                        WordEmbeddingDistance holder = nearestNeighbours[j];
+                        nearestNeighbours[j] = wed;
+                        wed = holder;
+                    }
                 }
             }
         }

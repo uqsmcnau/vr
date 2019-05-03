@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class WordEmbeddingDistance
 {
-    private WordEmbedding wordEmbed;
-    private double distance;
+    WordEmbedding word;
+    double distance;
+    double[] pcadistance;
 
     // Constructor
-    public WordEmbeddingDistance(WordEmbedding w, double d)
+    public WordEmbeddingDistance(WordEmbedding w, double d, double[] p)
     {
-        wordEmbed = w;
+        word = w;
         distance = d;
-    }
-
-    public string GetWord()
-    {
-        return wordEmbed.GetWord();
+        pcadistance = p;
     }
 
     public WordEmbedding getWordEmbedding()
     {
-        return wordEmbed;
+        return word;
     }
 
     public double GetDistance()
@@ -29,10 +26,28 @@ public class WordEmbeddingDistance
         return distance;
     }
 
+    public double[] getPCADistance()
+    {
+        return pcadistance;
+    }
+
     // Instance Method
     public override string ToString()
     {
-        return "(" + wordEmbed.GetWord() + ", " + distance + ")";
+        string outputString = "(" + word + ", " + distance + " [";
+        for (int i = 0; i < pcadistance.Length; i++)
+        {
+            outputString += pcadistance[i];
+            if ((i + 1) < pcadistance.Length)
+            {
+                outputString += ", ";
+            }
+            else
+            {
+                outputString += "]";
+            }
+        }
+        return outputString;
     }
 
     // Destructor

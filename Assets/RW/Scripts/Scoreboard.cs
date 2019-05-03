@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+using Accord.Statistics.Analysis;
+
 public class Scoreboard : Selectable
 {
     public GameObject scoreboard;
@@ -44,9 +46,9 @@ public class Scoreboard : Selectable
         count = 1000;
 
         embeddings = new WordEmbedding[count];
+        double[][] data = new double[count][];
 
         for (int j = 0; j < count; j++)
-        //while ((line = file.ReadLine()) != null)
         {
             line = file.ReadLine();
             subStrings = line.Split(' ');
@@ -57,14 +59,32 @@ public class Scoreboard : Selectable
             {
                 currentVectors[i] = System.Convert.ToDouble(subStrings[(i + 1)]);
             }
+            data[counter] = currentVectors;
 
             embeddings[counter] = new WordEmbedding(currentword, currentVectors);
-            //embeddings[counter].PrintString();
+
             counter++;
         }
         file.Close();
 
+        var pca = new PrincipalComponentAnalysis();
+        pca.Learn(data);
+        double[][] finalData = pca.Transform(data);
+
         counter = 0;
+
+        for (int j = 0; j < count; j++)
+        {
+            WordEmbedding Target = embeddings[j];
+
+            double[] pcavectors = new double[3];
+            for (int k = 0; k < 3; k++)
+            {
+                pcavectors[k] = finalData[j][k];
+            }
+            Target.SetPCAVectors(pcavectors);
+            embeddings[j] = Target;
+        }
 
         UpdateTarget();
     }
@@ -101,22 +121,30 @@ public class Scoreboard : Selectable
         if (preview)
         {
             preview = false;
-            scoreboard.SetActive(false);
+            //scoreboard.SetActive(false);
 
             options = new GameObject[k];
 
             for (int i = 0; i < k; i++)
             {
+                WordEmbeddingDistance neighbour = NN[i];
+
                 GameObject option = Instantiate(optionPrefab);
                 Option o = option.GetComponent<Option>();
                 o.cam = cam;
                 o.SetParent(this);
-                o.SetWordEmbedding(NN[i].getWordEmbedding());
+                o.SetWordEmbedding(neighbour.getWordEmbedding());
+
+
+                //option.transform.position = transform.position + new Vector3(
+                //        (float)(5 * Math.Sin(((float)i) / ((float)k) * ((float)2 * Math.PI))),
+                //        (float)(5 * neighbour.getPCADistance()[1]),
+                //        (float)(5 * Math.Cos(((float)i) / ((float)k) * ((float)2 * Math.PI))));
 
                 option.transform.position = transform.position + new Vector3(
-                        (float)(5 * Math.Sin(((float)i) / ((float)k) * ((float)2 * Math.PI))),
-                        0.0f,
-                        (float)(5 * Math.Cos(((float)i) / ((float)k) * ((float)2 * Math.PI))));
+                        (float)(5 * neighbour.getPCADistance()[0]),
+                        (float)(5 * neighbour.getPCADistance()[1]),
+                        (float)(5 * neighbour.getPCADistance()[2]));
 
                 options[i] = option;
             }
@@ -124,9 +152,16 @@ public class Scoreboard : Selectable
         {
             for (int i = 0; i < k; i++)
             {
+                WordEmbeddingDistance neighbour = NN[i];
                 GameObject option = options[i];
                 Option o = option.GetComponent<Option>();
                 o.SetWordEmbedding(NN[i].getWordEmbedding());
+
+
+                option.transform.position = transform.position + new Vector3(
+                        (float)(5 * neighbour.getPCADistance()[0]),
+                        (float)(5 * neighbour.getPCADistance()[1]),
+                        (float)(5 * neighbour.getPCADistance()[2]));
             }
         }
     }

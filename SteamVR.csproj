@@ -466,6 +466,24 @@
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
     </Reference>
+    <Reference Include="Accord.Math">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Statistics.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning.GPL">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.GPL.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math.Core">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.Core.dll</HintPath>
+    </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0f2/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
     </Reference>
