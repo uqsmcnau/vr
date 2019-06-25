@@ -27,6 +27,7 @@ public class Scoreboard : Selectable
 
     private readonly int k = 10;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -86,6 +87,7 @@ public class Scoreboard : Selectable
             embeddings[j] = Target;
         }
 
+
         UpdateTarget();
     }
 
@@ -135,12 +137,6 @@ public class Scoreboard : Selectable
                 o.SetParent(this);
                 o.SetWordEmbedding(neighbour.getWordEmbedding());
 
-
-                //option.transform.position = transform.position + new Vector3(
-                //        (float)(5 * Math.Sin(((float)i) / ((float)k) * ((float)2 * Math.PI))),
-                //        (float)(5 * neighbour.getPCADistance()[1]),
-                //        (float)(5 * Math.Cos(((float)i) / ((float)k) * ((float)2 * Math.PI))));
-
                 option.transform.position = transform.position + new Vector3(
                         (float)(5 * neighbour.getPCADistance()[0]),
                         (float)(5 * neighbour.getPCADistance()[1]),
@@ -158,10 +154,10 @@ public class Scoreboard : Selectable
                 o.SetWordEmbedding(NN[i].getWordEmbedding());
 
 
-                option.transform.position = transform.position + new Vector3(
+                o.setTargetPosition(transform.position + new Vector3(
                         (float)(5 * neighbour.getPCADistance()[0]),
                         (float)(5 * neighbour.getPCADistance()[1]),
-                        (float)(5 * neighbour.getPCADistance()[2]));
+                        (float)(5 * neighbour.getPCADistance()[2])));
             }
         }
     }

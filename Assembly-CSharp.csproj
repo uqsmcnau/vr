@@ -62,11 +62,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Option.cs" />
     <Compile Include="Assets\RW\Scripts\ActionTest.cs" />
     <Compile Include="Assets\RW\Scripts\ControllerGrabObject.cs" />
     <Compile Include="Assets\RW\Scripts\LaserPointer.cs" />
     <Compile Include="Assets\RW\Scripts\LoadEmbedding.cs" />
+    <Compile Include="Assets\RW\Scripts\Option.cs" />
     <Compile Include="Assets\RW\Scripts\Scoreboard.cs" />
     <Compile Include="Assets\RW\Scripts\Selectable.cs" />
     <Compile Include="Assets\RW\Scripts\WordEmbedding.cs" />
@@ -356,6 +356,24 @@
     <Reference Include="nunit.framework">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0f2/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Accord">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning.GPL">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.GPL.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math.Core">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics">
+      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Statistics.dll</HintPath>
+    </Reference>
     <Reference Include="Valve.Newtonsoft.Json">
       <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/SteamVR/Input/Plugins/JSON.NET/Valve.Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -367,24 +385,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math">
-      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord">
-      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.MachineLearning">
-      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics">
-      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.MachineLearning.GPL">
-      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.MachineLearning.GPL.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math.Core">
-      <HintPath>C:/Users/uqsmcnau/Documents/GitHub/vr/Assets/RW/Scripts/Accord.Math.Core.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0f2/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
