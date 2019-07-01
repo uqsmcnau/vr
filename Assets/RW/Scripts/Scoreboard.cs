@@ -125,7 +125,24 @@ public class Scoreboard : Selectable
             preview = false;
             //scoreboard.SetActive(false);
 
-            options = new GameObject[k];
+            options = new GameObject[k + 1];
+
+            //No longer display initial option
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+            meshRenderer.enabled = false;
+            meshRenderer = text.GetComponent<MeshRenderer>();
+            meshRenderer.enabled = false;
+            BoxCollider boxCollider = GetComponent<BoxCollider>();
+            boxCollider.enabled = false;
+
+            GameObject targetOption = Instantiate(optionPrefab);
+            Option to = targetOption.GetComponent<Option>();
+            to.cam = cam;
+            to.SetParent(this);
+            to.SetWordEmbedding(Target);
+            targetOption.transform.position = transform.position;
+            options[0] = targetOption;
+
 
             for (int i = 0; i < k; i++)
             {
@@ -142,23 +159,140 @@ public class Scoreboard : Selectable
                         (float)(5 * neighbour.getPCADistance()[1]),
                         (float)(5 * neighbour.getPCADistance()[2]));
 
-                options[i] = option;
+                options[i + 1] = option;
             }
         } else
         {
+            WordEmbeddingDistance[] newWED = new WordEmbeddingDistance[k + 1];
+            WordEmbeddingDistance[] exisitingWED = new WordEmbeddingDistance[k + 1];
+            int countOfNewWords = 0;
+
             for (int i = 0; i < k; i++)
             {
                 WordEmbeddingDistance neighbour = NN[i];
+                Boolean flag = false;
+                for (int j = 0; j < k; j++)
+                {
+                    if (options[j].GetComponent<Option>().getWord() == NN[i].getWordEmbedding().GetWord())
+                    {
+                        flag = true;
+                        exisitingWED[i - countOfNewWords] = neighbour;
+                    }
+                }
+                if (!flag)
+                {
+                    newWED[countOfNewWords] = neighbour;
+                    countOfNewWords += 1;
+                }
+            }
+
+            Debug.Log("New Words");
+            for (int i = 0; i < k + 1; i++)
+            {
+                if (newWED[i] != null)
+                {
+                    Debug.Log(newWED[i].getWordEmbedding().GetWord());
+                }
+            }
+            Debug.Log("Existing Words");
+            for (int i = 0; i < k + 1; i++)
+            {
+                if (exisitingWED[i] != null)
+                {
+                    Debug.Log(exisitingWED[i].getWordEmbedding().GetWord());
+                }
+            }
+
+            for (int i = 0; i < k + 1; i++)
+            {
                 GameObject option = options[i];
                 Option o = option.GetComponent<Option>();
-                o.SetWordEmbedding(NN[i].getWordEmbedding());
+            
+                if (o.getWord() == Target.GetWord())
+                {
+                    o.SetWordEmbedding(Target);
+                    o.setTargetPosition(transform.position);
+                }
+                else
+                {
+                    Boolean flag = false;
+                    for (int j = 0; j < k + 1; j++)
+                    {
+                        if (exisitingWED[j] != null && exisitingWED[j].getWordEmbedding().GetWord() == o.getWord())
+                        {
+                            flag = true;
+                            o.SetWordEmbedding(exisitingWED[j].getWordEmbedding());
+                            o.setTargetPosition(transform.position + new Vector3(
+                                (float)(5 * exisitingWED[j].getPCADistance()[0]),
+                                (float)(5 * exisitingWED[j].getPCADistance()[1]),
+                                (float)(5 * exisitingWED[j].getPCADistance()[2])));
+                        }
+                    }
+                    if (!flag)
+                    {
+                        countOfNewWords -= 1;
 
-
-                o.setTargetPosition(transform.position + new Vector3(
-                        (float)(5 * neighbour.getPCADistance()[0]),
-                        (float)(5 * neighbour.getPCADistance()[1]),
-                        (float)(5 * neighbour.getPCADistance()[2])));
+                        o.SetWordEmbedding(newWED[countOfNewWords].getWordEmbedding());
+                        o.setPosition(transform.position + new Vector3(
+                                (float)(5 * newWED[countOfNewWords].getPCADistance()[0]),
+                                (float)(5 * newWED[countOfNewWords].getPCADistance()[1]),
+                                (float)(5 * newWED[countOfNewWords].getPCADistance()[2])));
+                        o.setTargetPosition(transform.position + new Vector3(
+                                (float)(5 * newWED[countOfNewWords].getPCADistance()[0]),
+                                (float)(5 * newWED[countOfNewWords].getPCADistance()[1]),
+                                (float)(5 * newWED[countOfNewWords].getPCADistance()[2])));
+                    }
+                }
             }
+
+            //int newOptionCounter = 0;
+            //for (int i = 0; i < k; i++)
+            //{
+            //    GameObject option = options[i];
+            //    Option o = option.GetComponent<Option>();
+            //
+            //    Boolean flag = false;
+            //    for (int j = 0; j < k; j++)
+            //    {
+            //        if (exisitingWED[j] != null && exisitingWED[j].getWordEmbedding().GetWord() == o.getWord())
+            //        {
+            //            flag = true;
+            //            o.SetWordEmbedding(exisitingWED[j].getWordEmbedding());
+            //            o.setTargetPosition(transform.position + new Vector3(
+            //                (float)(5 * exisitingWED[j].getPCADistance()[0]),
+            //                (float)(5 * exisitingWED[j].getPCADistance()[1]),
+            //                (float)(5 * exisitingWED[j].getPCADistance()[2])));
+            //        }
+            //    }
+            //    if (!flag)
+            //    {
+            //        o.SetWordEmbedding(newWED[newOptionCounter].getWordEmbedding());
+            //        o.setPosition(transform.position + new Vector3(
+            //                (float)(5 * newWED[newOptionCounter].getPCADistance()[0]),
+            //                (float)(5 * newWED[newOptionCounter].getPCADistance()[1]),
+            //                (float)(5 * newWED[newOptionCounter].getPCADistance()[2])));
+            //        newOptionCounter += 1;
+            //    }
+            //}
+
+            //GameObject targetOption = options[0];
+            //Option to = targetOption.GetComponent<Option>();
+
+            //to.SetWordEmbedding(Target);
+            //targetOption.transform.position = transform.position;
+
+            //for (int i = 0; i < k; i++)
+            //{
+            //    WordEmbeddingDistance neighbour = NN[i];
+            //    GameObject option = options[i + 1];
+            //    Option o = option.GetComponent<Option>();
+
+            //    o.SetWordEmbedding(NN[i].getWordEmbedding());
+            //    o.setTargetPosition(transform.position + new Vector3(
+            //            (float)(5 * neighbour.getPCADistance()[0]),
+            //            (float)(5 * neighbour.getPCADistance()[1]),
+            //            (float)(5 * neighbour.getPCADistance()[2])));
+            //}
         }
     }
 }

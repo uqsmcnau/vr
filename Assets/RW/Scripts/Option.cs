@@ -11,7 +11,7 @@ public class Option : Selectable
     public TextMeshPro text;
     
     private float startTimer = 0.0f;
-    private readonly float moveWindow = 15.0f;
+    private readonly float moveWindow = 3.0f;
     private Vector3 startPosition;
     private Vector3 targetPosition;
 
@@ -56,10 +56,20 @@ public class Option : Selectable
         parent.Select();
     }
 
+    public void setPosition(Vector3 targetPosition)
+    {
+        transform.position = targetPosition;
+    }
+
     public void setTargetPosition(Vector3 targetPosition)
     {
         startPosition = transform.position;
         startTimer = Time.time;
         this.targetPosition = targetPosition;
+    }
+
+    public string getWord()
+    {
+        return we.GetWord();
     }
 }
