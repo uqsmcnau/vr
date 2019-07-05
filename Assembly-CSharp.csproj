@@ -64,13 +64,14 @@
   <ItemGroup>
     <Compile Include="Assets\RW\Scripts\ActionTest.cs" />
     <Compile Include="Assets\RW\Scripts\ControllerGrabObject.cs" />
-    <Compile Include="Assets\RW\Scripts\LaserPointer.cs" />
+    <Compile Include="Assets\RW\Scripts\ControllerLaserPointer.cs" />
+    <Compile Include="Assets\RW\Scripts\ControllerZoom.cs" />
     <Compile Include="Assets\RW\Scripts\LoadEmbedding.cs" />
     <Compile Include="Assets\RW\Scripts\Option.cs" />
-    <Compile Include="Assets\RW\Scripts\Scoreboard.cs" />
     <Compile Include="Assets\RW\Scripts\Selectable.cs" />
     <Compile Include="Assets\RW\Scripts\WordEmbedding.cs" />
     <Compile Include="Assets\RW\Scripts\WordEmbeddingDistance.cs" />
+    <Compile Include="Assets\RW\Scripts\WordEmbeddingModel.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />

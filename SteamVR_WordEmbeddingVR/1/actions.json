@@ -29,13 +29,11 @@
     },
     {
       "name": "/actions/default/in/ZoomIn",
-      "type": "boolean",
-      "requirement": "mandatory"
+      "type": "boolean"
     },
     {
       "name": "/actions/default/in/ZoomOut",
-      "type": "boolean",
-      "requirement": "mandatory"
+      "type": "boolean"
     },
     {
       "name": "/actions/default/out/Haptic",

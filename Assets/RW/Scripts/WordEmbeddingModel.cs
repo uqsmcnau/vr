@@ -5,8 +5,9 @@ using UnityEngine;
 using TMPro;
 
 using Accord.Statistics.Analysis;
+using Accord.MachineLearning.Clustering;
 
-public class Scoreboard : Selectable
+public class WordEmbeddingModel : Selectable
 {
     public GameObject scoreboard;
     public TextMeshPro text;
@@ -28,6 +29,7 @@ public class Scoreboard : Selectable
 
     private readonly int k = 10;
 
+    private float zoom = 1.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -69,11 +71,24 @@ public class Scoreboard : Selectable
         }
         file.Close();
 
+        long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
         var pca = new PrincipalComponentAnalysis();
         pca.Learn(data);
         double[][] finalData = pca.Transform(data);
 
+        // Create a new t-SNE algorithm 
+        //TSNE tSNE = new TSNE()
+        //{
+        //    NumberOfOutputs = 3,
+        //    Perplexity = 50
+        //};
+
+        //double[][] finalData = tSNE.Transform(data);
         counter = 0;
+
+        double[] maxs = { 0, 0, 0 };
+        double[] mins = { 0, 0, 0 };
 
         for (int j = 0; j < count; j++)
         {
@@ -83,20 +98,35 @@ public class Scoreboard : Selectable
             for (int k = 0; k < 3; k++)
             {
                 pcavectors[k] = finalData[j][k];
+                if (pcavectors[k] > maxs[k])
+                {
+                    maxs[k] = pcavectors[k];
+                } else if (pcavectors[k] < mins[k])
+                {
+                    mins[k] = pcavectors[k];
+                }
             }
+
             Target.SetPCAVectors(pcavectors);
             embeddings[j] = Target;
         }
 
-
+        Debug.Log(mins[0]);
+        Debug.Log(mins[1]);
+        Debug.Log(mins[2]);
+        Debug.Log(maxs[0]);
+        Debug.Log(maxs[1]);
+        Debug.Log(maxs[2]);
+        Debug.Log(time - (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond));
         UpdateTarget();
+        Debug.Log(time - (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond));
     }
 
     // Update is called once per frame
     void Update()
     {
         scoreboard.transform.rotation = Quaternion.LookRotation(scoreboard.GetComponent<Renderer>().bounds.center - cam.transform.position);
-        if (preview && (counter%100 == 0))
+        if (preview && (counter%10 == 0))
         {
             UpdateTarget();
         }
@@ -113,7 +143,7 @@ public class Scoreboard : Selectable
     
     private void UpdateTarget()
     {
-        Target = embeddings[(counter / 100) % count];
+        Target = embeddings[(counter / 10) % count];
         Target.FindNN(embeddings, k);
         text.text = Target.GetWord();
     }
@@ -159,9 +189,9 @@ public class Scoreboard : Selectable
                 o.SetWordEmbedding(neighbour.getWordEmbedding());
 
                 option.transform.position = transform.position + new Vector3(
-                        (float)(5 * neighbour.getPCADistance()[0]),
-                        (float)(5 * neighbour.getPCADistance()[1]),
-                        (float)(5 * neighbour.getPCADistance()[2]));
+                        (float)(zoom * neighbour.getPCADistance()[0]),
+                        (float)(zoom * neighbour.getPCADistance()[1]),
+                        (float)(zoom * neighbour.getPCADistance()[2]));
 
                 options[i + 1] = option;
             }
@@ -230,9 +260,9 @@ public class Scoreboard : Selectable
                             flag = true;
                             o.SetWordEmbedding(exisitingWED[j].getWordEmbedding());
                             o.SetTargetPosition(transform.position + new Vector3(
-                                (float)(5 * exisitingWED[j].getPCADistance()[0]),
-                                (float)(5 * exisitingWED[j].getPCADistance()[1]),
-                                (float)(5 * exisitingWED[j].getPCADistance()[2])));
+                                (float)(zoom * exisitingWED[j].getPCADistance()[0]),
+                                (float)(zoom * exisitingWED[j].getPCADistance()[1]),
+                                (float)(zoom * exisitingWED[j].getPCADistance()[2])));
                             o.SetVisible();
                         }
                     }
@@ -251,17 +281,27 @@ public class Scoreboard : Selectable
                         
                         o.SetWordEmbedding(newWED[countOfNewWords].getWordEmbedding());
                         o.SetPosition(targetCurrentPosition + new Vector3(
-                                (float)(5 * newWED[countOfNewWords].getPCADistance()[0]),
-                                (float)(5 * newWED[countOfNewWords].getPCADistance()[1]),
-                                (float)(5 * newWED[countOfNewWords].getPCADistance()[2])));
+                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[0]),
+                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[1]),
+                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[2])));
                         o.SetTargetPosition(transform.position + new Vector3(
-                                (float)(5 * newWED[countOfNewWords].getPCADistance()[0]),
-                                (float)(5 * newWED[countOfNewWords].getPCADistance()[1]),
-                                (float)(5 * newWED[countOfNewWords].getPCADistance()[2])));
+                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[0]),
+                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[1]),
+                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[2])));
                         o.StartFadeIn();
                     }
                 }
             }
         }
+    }
+
+    public void ZoomIn()
+    {
+
+    }
+
+    public void ZoomOut()
+    {
+
     }
 }

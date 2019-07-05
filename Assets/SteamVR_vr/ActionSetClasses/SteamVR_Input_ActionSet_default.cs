@@ -65,6 +65,22 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Boolean ZoomIn
+        {
+            get
+            {
+                return SteamVR_Actions.default_ZoomIn;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean ZoomOut
+        {
+            get
+            {
+                return SteamVR_Actions.default_ZoomOut;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

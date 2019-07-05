@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class Option : Selectable
 {
-    private Scoreboard parent;
+    private WordEmbeddingModel parent;
     private WordEmbedding we;
+
     public Camera cam;
     public TextMeshPro text;
     
@@ -69,7 +70,7 @@ public class Option : Selectable
         }
     }
 
-    public void SetParent(Scoreboard p)
+    public void SetParent(WordEmbeddingModel p)
     {
         parent = p;
     }

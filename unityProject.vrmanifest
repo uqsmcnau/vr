@@ -2,13 +2,13 @@
   "source": "Unity",
   "applications": [
     {
-      "app_key": "application.generated.unity.introductiontohtcvivestarter.exe",
+      "app_key": "application.generated.unity.wordembeddingVR",
       "launch_type": "url",
       "url": "steam://launch/",
       "action_manifest_path": "C:\\Users\\uqsmcnau\\Documents\\GitHub\\vr\\actions.json",
       "strings": {
         "en_us": {
-          "name": "Introduction To HTC Vive - Starter [Testing]"
+          "name": "vr [Testing]"
         }
       }
     }

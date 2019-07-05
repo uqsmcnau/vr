@@ -1,6 +1,6 @@
 {
-  "name": "Blarg",
-  "version": 2,
+  "name": "SteamVR_vr",
+  "version": 1,
   "overwriteOld": true,
   "removeUnused": true,
   "imported": false

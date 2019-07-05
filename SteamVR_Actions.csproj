@@ -62,10 +62,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\SteamVR_Input\ActionSetClasses\SteamVR_Input_ActionSet_default.cs" />
-    <Compile Include="Assets\SteamVR_Input\SteamVR_Input_Actions.cs" />
-    <Compile Include="Assets\SteamVR_Input\SteamVR_Input_ActionSets.cs" />
-    <Compile Include="Assets\SteamVR_Input\SteamVR_Input_Initialization.cs" />
+    <Compile Include="Assets\SteamVR_vr\ActionSetClasses\SteamVR_Input_ActionSet_default.cs" />
+    <Compile Include="Assets\SteamVR_vr\SteamVR_Input_Actions.cs" />
+    <Compile Include="Assets\SteamVR_vr\SteamVR_Input_ActionSets.cs" />
+    <Compile Include="Assets\SteamVR_vr\SteamVR_Input_Initialization.cs" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.0f2/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
