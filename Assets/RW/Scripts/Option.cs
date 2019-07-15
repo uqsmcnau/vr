@@ -12,7 +12,7 @@ public class Option : Selectable
     public TextMeshPro text;
     
     private float startTimer = 0.0f;
-    private readonly float moveWindow = 3.0f;
+    private readonly float moveWindow = 1.0f;
     private Vector3 startingPosition;
     private Vector3 targetPosition;
 

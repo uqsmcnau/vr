@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using MySql.Data.MySqlClient;
+using System.Text.RegularExpressions;
 
 using Accord.Statistics.Analysis;
 using Accord.MachineLearning.Clustering;
@@ -27,7 +29,7 @@ public class WordEmbeddingModel : Selectable
     public GameObject optionPrefab;
     private GameObject[] options;
 
-    private readonly int k = 10;
+    private readonly int k = 100;
 
     private float zoom = 1.0f;
 
@@ -73,18 +75,18 @@ public class WordEmbeddingModel : Selectable
 
         long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-        var pca = new PrincipalComponentAnalysis();
-        pca.Learn(data);
-        double[][] finalData = pca.Transform(data);
+        //var pca = new PrincipalComponentAnalysis();
+        //pca.Learn(data);
+        //double[][] finalData = pca.Transform(data);
 
         // Create a new t-SNE algorithm 
-        //TSNE tSNE = new TSNE()
-        //{
-        //    NumberOfOutputs = 3,
-        //    Perplexity = 50
-        //};
+        TSNE tSNE = new TSNE()
+        {
+            NumberOfOutputs = 3,
+            Perplexity = 50
+        };
 
-        //double[][] finalData = tSNE.Transform(data);
+        double[][] finalData = tSNE.Transform(data);
         counter = 0;
 
         double[] maxs = { 0, 0, 0 };
@@ -131,6 +133,51 @@ public class WordEmbeddingModel : Selectable
             UpdateTarget();
         }
         counter++;
+    }
+
+    private static int GetWordembeddingID(string word)
+    {
+        int id = -1;
+        MySqlConnection conn = new MySqlConnection("Server=localhost; database=wordembeddings; UID=root; password=password");
+        conn.Open();
+
+        string query = "SELECT id FROM wordembedding WHERE word = @word";
+        var cmd = new MySqlCommand(query, conn);
+        cmd.Parameters.AddWithValue("@word", word);
+
+        var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            id = reader.GetInt32(0);
+        }
+
+        conn.Close();
+
+        return id;
+    }
+
+    private static double[] GetWordembeddingPCA(int id)
+    {
+        MySqlConnection conn = new MySqlConnection("Server=localhost; database=wordembeddings; UID=root; password=password");
+        conn.Open();
+
+        double[] pca = new double[3];
+
+        string query = "SELECT x, y, z FROM wordembedding WHERE id = @id";
+        var cmd = new MySqlCommand(query, conn);
+        cmd.Parameters.AddWithValue("@id", id);
+
+        var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            pca[0] = reader.GetDouble(0);
+            pca[1] = reader.GetDouble(1);
+            pca[2] = reader.GetDouble(2);
+        }
+
+        conn.Close();
+
+        return pca;
     }
 
     public void SetTarget(WordEmbedding we)
@@ -295,13 +342,43 @@ public class WordEmbeddingModel : Selectable
         }
     }
 
+    public void refreshModel()
+    {
+        WordEmbeddingDistance[] NN = Target.GetNN();
+
+        Vector3 targetCurrentPosition = transform.position;
+
+        // For each option update and move or recreate in model
+        for (int i = 0; i < k + 1; i++)
+        {
+            GameObject option = options[i];
+            Option o = option.GetComponent<Option>();
+
+            for (int j = 0; j < k; j++)
+            {
+                // If so move it towards its new location relative to the target word
+                if (NN[j] != null && NN[j].getWordEmbedding().GetWord() == o.getWord())
+                {
+                    o.SetTargetPosition(transform.position + new Vector3(
+                        (float)(zoom * NN[j].getPCADistance()[0]),
+                        (float)(zoom * NN[j].getPCADistance()[1]),
+                        (float)(zoom * NN[j].getPCADistance()[2])));
+                    o.SetVisible();
+                }
+            }
+        }
+        Debug.Log(zoom);
+    }
+
     public void ZoomIn()
     {
-
+        zoom *= 1.25f;
+        refreshModel();
     }
 
     public void ZoomOut()
     {
-
+        zoom *= 0.8f;
+        refreshModel();
     }
 }
