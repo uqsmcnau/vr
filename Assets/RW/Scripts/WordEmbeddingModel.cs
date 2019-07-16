@@ -5,9 +5,9 @@ using UnityEngine;
 using TMPro;
 using MySql.Data.MySqlClient;
 using System.Text.RegularExpressions;
-
 using Accord.Statistics.Analysis;
 using Accord.MachineLearning.Clustering;
+using System.Data.SqlTypes;
 
 public class WordEmbeddingModel : Selectable
 {
@@ -49,10 +49,14 @@ public class WordEmbeddingModel : Selectable
         count = System.Convert.ToInt32(subStrings[0]);
         dimensionality = System.Convert.ToInt32(subStrings[1]);
 
-        count = 1000;
+        //count = 10000;
 
         embeddings = new WordEmbedding[count];
-        double[][] data = new double[count][];
+        //double[][] data = new double[count][];
+
+
+        double[] maxs = { 0, 0, 0 };
+        double[] mins = { 0, 0, 0 };
 
         for (int j = 0; j < count; j++)
         {
@@ -65,53 +69,31 @@ public class WordEmbeddingModel : Selectable
             {
                 currentVectors[i] = System.Convert.ToDouble(subStrings[(i + 1)]);
             }
-            data[counter] = currentVectors;
 
-            embeddings[counter] = new WordEmbedding(currentword, currentVectors);
+            WordEmbedding Target = new WordEmbedding(currentword, currentVectors);
+
+            int id = GetWordembeddingID(Target.GetWord());
+            double[] pcavectors = GetWordembeddingPCA(id);
+
+            for (int k = 0; k < 3; k++)
+            {
+                if (pcavectors[k] > maxs[k])
+                {
+                    maxs[k] = pcavectors[k];
+                }
+                else if (pcavectors[k] < mins[k])
+                {
+                    mins[k] = pcavectors[k];
+                }
+            }
+            Target.SetPCAVectors(pcavectors);
+            embeddings[counter] = Target;
 
             counter++;
         }
         file.Close();
 
         long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-        //var pca = new PrincipalComponentAnalysis();
-        //pca.Learn(data);
-        //double[][] finalData = pca.Transform(data);
-
-        // Create a new t-SNE algorithm 
-        TSNE tSNE = new TSNE()
-        {
-            NumberOfOutputs = 3,
-            Perplexity = 50
-        };
-
-        double[][] finalData = tSNE.Transform(data);
-        counter = 0;
-
-        double[] maxs = { 0, 0, 0 };
-        double[] mins = { 0, 0, 0 };
-
-        for (int j = 0; j < count; j++)
-        {
-            WordEmbedding Target = embeddings[j];
-
-            double[] pcavectors = new double[3];
-            for (int k = 0; k < 3; k++)
-            {
-                pcavectors[k] = finalData[j][k];
-                if (pcavectors[k] > maxs[k])
-                {
-                    maxs[k] = pcavectors[k];
-                } else if (pcavectors[k] < mins[k])
-                {
-                    mins[k] = pcavectors[k];
-                }
-            }
-
-            Target.SetPCAVectors(pcavectors);
-            embeddings[j] = Target;
-        }
 
         Debug.Log(mins[0]);
         Debug.Log(mins[1]);
@@ -138,7 +120,7 @@ public class WordEmbeddingModel : Selectable
     private static int GetWordembeddingID(string word)
     {
         int id = -1;
-        MySqlConnection conn = new MySqlConnection("Server=localhost; database=wordembeddings; UID=root; password=password");
+        MySqlConnection conn = new MySqlConnection("Server=localhost; database=wordembeddings; UID=root; password=password;");
         conn.Open();
 
         string query = "SELECT id FROM wordembedding WHERE word = @word";
