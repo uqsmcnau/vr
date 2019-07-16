@@ -30,6 +30,7 @@ public class WordEmbeddingModel : Selectable
     private GameObject[] options;
 
     private int k = 10;
+    public int number_of_neighbours;
 
     private float zoom = 1.0f;
 
@@ -41,6 +42,8 @@ public class WordEmbeddingModel : Selectable
         counter = 0;
         string line;
         preview = true;
+
+        number_of_neighbours = k;
 
         // Read the file and display it line by line.  
         System.IO.StreamReader file = new System.IO.StreamReader(@"C:\UNI\skipgram.txt");
@@ -117,6 +120,51 @@ public class WordEmbeddingModel : Selectable
                 SetTarget(we);
                 Refresh();
             }
+        } else if (!preview && k != number_of_neighbours)
+        {
+            for (int i = 0; i < k + 1; i++)
+            {
+                GameObject option = options[i];
+                UnityEngine.Object.Destroy(option);
+            }
+
+            k = number_of_neighbours;
+            SetTarget(Target);
+
+            WordEmbeddingDistance[] NN = Target.GetNN();
+
+            // Create game options
+            options = new GameObject[k + 1];
+
+            // Create target option
+            GameObject targetOption = Instantiate(optionPrefab);
+            Option to = targetOption.GetComponent<Option>();
+            to.cam = cam;
+            to.SetParent(this);
+            to.SetWordEmbedding(Target);
+            targetOption.transform.position = transform.position;
+            options[0] = targetOption;
+
+            // Create k Nearest Neighbour Objects
+            for (int i = 0; i < k; i++)
+            {
+                WordEmbeddingDistance neighbour = NN[i];
+
+                GameObject option = Instantiate(optionPrefab);
+                Option o = option.GetComponent<Option>();
+                o.cam = cam;
+                o.SetParent(this);
+                o.SetWordEmbedding(neighbour.getWordEmbedding());
+
+                option.transform.position = transform.position + new Vector3(
+                        (float)(zoom * neighbour.getPCADistance()[0]),
+                        (float)(zoom * neighbour.getPCADistance()[1]),
+                        (float)(zoom * neighbour.getPCADistance()[2]));
+
+                options[i + 1] = option;
+            }
+
+            Refresh();
         }
         counter++;
     }
