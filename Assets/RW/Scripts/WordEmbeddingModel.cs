@@ -29,9 +29,11 @@ public class WordEmbeddingModel : Selectable
     public GameObject optionPrefab;
     private GameObject[] options;
 
-    private readonly int k = 100;
+    private int k = 10;
 
     private float zoom = 1.0f;
+
+    public string word;
 
     // Start is called before the first frame update
     void Start()
@@ -40,7 +42,6 @@ public class WordEmbeddingModel : Selectable
         string line;
         preview = true;
 
-            
         // Read the file and display it line by line.  
         System.IO.StreamReader file = new System.IO.StreamReader(@"C:\UNI\skipgram.txt");
         line = file.ReadLine();
@@ -49,7 +50,7 @@ public class WordEmbeddingModel : Selectable
         count = System.Convert.ToInt32(subStrings[0]);
         dimensionality = System.Convert.ToInt32(subStrings[1]);
 
-        //count = 10000;
+        count = 5000;
 
         embeddings = new WordEmbedding[count];
         //double[][] data = new double[count][];
@@ -93,17 +94,12 @@ public class WordEmbeddingModel : Selectable
         }
         file.Close();
 
-        long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-        Debug.Log(mins[0]);
-        Debug.Log(mins[1]);
-        Debug.Log(mins[2]);
-        Debug.Log(maxs[0]);
-        Debug.Log(maxs[1]);
-        Debug.Log(maxs[2]);
-        Debug.Log(time - (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond));
+        //long time = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        
         UpdateTarget();
-        Debug.Log(time - (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond));
+
+        SetTarget(GetWordEmbedding("ocean"));
+        Select();
     }
 
     // Update is called once per frame
@@ -113,8 +109,28 @@ public class WordEmbeddingModel : Selectable
         if (preview && (counter%10 == 0))
         {
             UpdateTarget();
+        } else if (!preview && word != Target.GetWord())
+        {
+            WordEmbedding we = GetWordEmbedding(word);
+            if (we != null)
+            {
+                SetTarget(we);
+                Refresh();
+            }
         }
         counter++;
+    }
+
+    private WordEmbedding GetWordEmbedding(String word)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            if (embeddings[i].GetWord() == word)
+            {
+                return embeddings[i];
+            }
+        }
+        return null;
     }
 
     private static int GetWordembeddingID(string word)
@@ -166,6 +182,7 @@ public class WordEmbeddingModel : Selectable
     {
         OldTarget = Target;
         Target = we;
+        word = Target.GetWord();
         Target.FindNN(embeddings, k);
         text.text = Target.GetWord();
     }
@@ -175,6 +192,35 @@ public class WordEmbeddingModel : Selectable
         Target = embeddings[(counter / 10) % count];
         Target.FindNN(embeddings, k);
         text.text = Target.GetWord();
+    }
+
+    private void Refresh()
+    {
+        WordEmbeddingDistance[] NN = Target.GetNN();
+
+        GameObject option = options[0];
+        Option o = option.GetComponent<Option>();
+        o.SetWordEmbedding(Target);
+        o.SetTargetPosition(transform.position);
+        o.StartFadeIn();
+
+        // For each option update and move or recreate in model
+        for (int i = 0; i < k; i++)
+        {
+            option = options[i + 1];
+            o = option.GetComponent<Option>();
+
+            o.SetWordEmbedding(NN[i].getWordEmbedding());
+            o.SetPosition(transform.position + new Vector3(
+                    (float)(zoom * NN[i].getPCADistance()[0]),
+                    (float)(zoom * NN[i].getPCADistance()[1]),
+                    (float)(zoom * NN[i].getPCADistance()[2])));
+            o.SetTargetPosition(transform.position + new Vector3(
+                    (float)(zoom * NN[i].getPCADistance()[0]),
+                    (float)(zoom * NN[i].getPCADistance()[1]),
+                    (float)(zoom * NN[i].getPCADistance()[2])));
+            o.StartFadeIn();
+        }
     }
 
     public override void Select()
@@ -252,7 +298,6 @@ public class WordEmbeddingModel : Selectable
                     countOfNewWords += 1;
                 }
             }
-
             Vector3 targetCurrentPosition = transform.position;
 
             // For each option update and move or recreate in model
@@ -269,9 +314,7 @@ public class WordEmbeddingModel : Selectable
                     targetCurrentPosition = o.transform.position;
                 }
             }
-
-
-
+            
             // For each option update and move or recreate in model
             for (int i = 0; i < k + 1; i++)
             {
@@ -324,7 +367,8 @@ public class WordEmbeddingModel : Selectable
         }
     }
 
-    public void refreshModel()
+    // Reculate the position of each option
+    public void refreshPosition()
     {
         WordEmbeddingDistance[] NN = Target.GetNN();
 
@@ -355,12 +399,12 @@ public class WordEmbeddingModel : Selectable
     public void ZoomIn()
     {
         zoom *= 1.25f;
-        refreshModel();
+        refreshPosition();
     }
 
     public void ZoomOut()
     {
         zoom *= 0.8f;
-        refreshModel();
+        refreshPosition();
     }
 }
