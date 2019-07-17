@@ -67,6 +67,7 @@
     <Compile Include="Assets\RW\Scripts\ControllerZoom.cs" />
     <Compile Include="Assets\RW\Scripts\LaserPointer.cs" />
     <Compile Include="Assets\RW\Scripts\LoadEmbedding.cs" />
+    <Compile Include="Assets\RW\Scripts\Monitor.cs" />
     <Compile Include="Assets\RW\Scripts\Option.cs" />
     <Compile Include="Assets\RW\Scripts\Selectable.cs" />
     <Compile Include="Assets\RW\Scripts\WordEmbedding.cs" />

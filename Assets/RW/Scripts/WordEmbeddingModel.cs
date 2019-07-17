@@ -455,4 +455,19 @@ public class WordEmbeddingModel : Selectable
         zoom *= 0.8f;
         refreshPosition();
     }
+
+    public WordEmbedding getTarget()
+    {
+        return Target;
+    }
+
+    public GameObject[] getOptions()
+    {
+        return options;
+    }
+
+    public double getZoom()
+    {
+        return zoom;
+    }
 }
