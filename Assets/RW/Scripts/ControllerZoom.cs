@@ -11,6 +11,7 @@ public class ControllerZoom : MonoBehaviour
     public SteamVR_Behaviour_Pose controllerPose;
     public SteamVR_Action_Boolean zoomInAction;
     public SteamVR_Action_Boolean zoomOutAction;
+    public SteamVR_Action_Boolean pauseAction;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +32,12 @@ public class ControllerZoom : MonoBehaviour
         if (zoomOutAction.GetStateUp(handType))
         {
             parent.ZoomOut();
+        }
+
+        // 1
+        if (pauseAction.GetStateUp(handType))
+        {
+            parent.Pause();
         }
     }
 }

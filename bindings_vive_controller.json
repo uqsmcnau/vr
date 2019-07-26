@@ -66,6 +66,9 @@
                   "east" : {
                      "output" : "/actions/default/in/zoomin"
                   },
+                  "north" : {
+                     "output" : "/actions/default/in/pause"
+                  },
                   "south" : {
                      "output" : "/actions/default/in/teleport"
                   },
@@ -83,6 +86,9 @@
                "inputs" : {
                   "east" : {
                      "output" : "/actions/default/in/zoomin"
+                  },
+                  "north" : {
+                     "output" : "/actions/default/in/pause"
                   },
                   "south" : {
                      "output" : "/actions/default/in/teleport"

@@ -38,6 +38,11 @@
       "requirement": "mandatory"
     },
     {
+      "name": "/actions/default/in/Pause",
+      "type": "boolean",
+      "requirement": "mandatory"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     }
@@ -97,7 +102,8 @@
       "/actions/default/out/Haptic": "Haptic",
       "/actions/default/in/Grab": "Grab",
       "/actions/default/in/ZoomIn": "ZoomIn",
-      "/actions/default/in/ZoomOut": "ZoomOut"
+      "/actions/default/in/ZoomOut": "ZoomOut",
+      "/actions/default/in/Pause": "Pause"
     }
   ]
 }

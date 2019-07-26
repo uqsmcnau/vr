@@ -20,7 +20,7 @@ public class Option : Selectable
     private bool fadingOut = false;
     
     private Color color;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,15 +39,15 @@ public class Option : Selectable
         {
             float currentTime = Time.time;
             if (currentTime < (startTimer + moveWindow)) {
-                transform.position = startingPosition + (((currentTime - startTimer) / moveWindow) * (targetPosition - startingPosition));
+                transform.position = startingPosition + (((currentTime - startTimer + Time.deltaTime) / moveWindow) * (targetPosition - startingPosition));
 
                 if (fadingIn)
                 {
-                    GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, color.a * ((currentTime - startTimer) / moveWindow));
+                    GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, color.a * ((currentTime - startTimer + Time.deltaTime) / moveWindow));
                 }
                 else if (fadingOut)
                 {
-                    GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, color.a * (1.0f - ((currentTime - startTimer) / moveWindow)));
+                    GetComponent<MeshRenderer>().material.color = new Color(color.r, color.g, color.b, color.a * (1.0f - ((currentTime - startTimer + Time.deltaTime) / moveWindow)));
                 }
                 else
                 {
