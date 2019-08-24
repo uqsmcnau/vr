@@ -26,6 +26,8 @@ public class WordEmbeddingModel : Selectable
     private WordEmbedding Target;
     private WordEmbedding OldTarget;
 
+    public Transform cameraTransform;
+
     public GameObject optionPrefab;
     private GameObject[] options;
 
@@ -270,6 +272,8 @@ public class WordEmbeddingModel : Selectable
 
     public override void Select()
     {
+        transform.position = cameraTransform.position + (cameraTransform.forward * 5);
+
         WordEmbeddingDistance[] NN = Target.GetNN();
         //adjustZoomFromNeighbours();
 

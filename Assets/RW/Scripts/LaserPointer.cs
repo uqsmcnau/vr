@@ -9,6 +9,7 @@ public class LaserPointer : MonoBehaviour
     public SteamVR_Input_Sources handType;
     public SteamVR_Behaviour_Pose controllerPose;
     public SteamVR_Action_Boolean teleportAction;
+    public SteamVR_Action_Boolean moveAction;
 
     public GameObject laserPrefab;
     private GameObject laser; 
@@ -28,6 +29,8 @@ public class LaserPointer : MonoBehaviour
     private bool shouldSelect;
 
     private Selectable target;
+
+    public int moveMode = 0;
 
     private void ShowLaser(RaycastHit hit)
     {
@@ -50,6 +53,22 @@ public class LaserPointer : MonoBehaviour
 
     void Update()
     {
+        // Flight Mode
+        if (moveMode == 1)
+        {
+            if (moveAction.GetState(handType))
+            {
+                cameraRigTransform.position += (transform.forward / 10);
+            }
+        // Teleport Mode
+        } else if (moveMode == 2)
+        {
+            if (moveAction.GetState(handType))
+            {
+                cameraRigTransform.position += transform.forward;
+            }
+        }
+
         if (teleportAction.GetState(handType))
         {
             RaycastHit hit;
