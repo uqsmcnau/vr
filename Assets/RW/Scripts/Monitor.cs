@@ -36,7 +36,6 @@ public class Monitor : MonoBehaviour
 
         String outputString = "";
 
-        Debug.Log(wem.word + "-" + wem.number_of_neighbours);
         if (options != null)
         {
             for (int i = 0; i < options.Length; i++)
@@ -44,17 +43,15 @@ public class Monitor : MonoBehaviour
                 GameObject option = options[i];
                 outputString += "(" + option.GetComponent<Option>().getWord() + "-" + option.transform.position + ")";
             }
-            Debug.Log(outputString);
-
         }
-        //InsertRecord(run_id, aDate.ToString("yyyy/MM/ddTHH:mm:ss.fffffff"), cam.transform.position.ToString(), cam.transform.rotation.ToString(),
-        //    leftcontrollerPose.transform.position.ToString(), leftcontrollerPose.transform.rotation.ToString(),
-        //    rightcontrollerPose.transform.position.ToString(), rightcontrollerPose.transform.rotation.ToString(),
-        //    teleportAction.GetState(LefthandType), teleportAction.GetState(RighthandType),
-        //    grabAction.GetState(LefthandType), grabAction.GetState(RighthandType),
-        //    zoomInAction.GetState(LefthandType), zoomInAction.GetState(RighthandType),
-        //    zoomOutAction.GetState(LefthandType), zoomOutAction.GetState(RighthandType),
-        //    wem.word, wem.number_of_neighbours, outputString, wem.getZoom());
+        InsertRecord(run_id, aDate.ToString("yyyy/MM/ddTHH:mm:ss.fffffff"), cam.transform.position.ToString(), cam.transform.rotation.ToString(),
+            leftcontrollerPose.transform.position.ToString(), leftcontrollerPose.transform.rotation.ToString(),
+            rightcontrollerPose.transform.position.ToString(), rightcontrollerPose.transform.rotation.ToString(),
+            teleportAction.GetState(LefthandType), teleportAction.GetState(RighthandType),
+            grabAction.GetState(LefthandType), grabAction.GetState(RighthandType),
+            zoomInAction.GetState(LefthandType), zoomInAction.GetState(RighthandType),
+            zoomOutAction.GetState(LefthandType), zoomOutAction.GetState(RighthandType),
+            wem.word, wem.number_of_neighbours, outputString, wem.getZoom());
     }
 
     private static void InsertRecord(String run_id, String timeString, String cam_pos, String cam_rot, String left_pos, String left_rot,

@@ -34,6 +34,8 @@ public class WordEmbeddingModel : Selectable
     private int k = 10;
     public int number_of_neighbours;
 
+    public string inputfile = "C:\\UNI\\australia.txt";
+
     private float zoom = 1.0f;
     public float scale = 1.0f;
     public string word;
@@ -58,16 +60,18 @@ public class WordEmbeddingModel : Selectable
         number_of_neighbours = k;
 
         // Read the file and display it line by line.  
-        System.IO.StreamReader file = new System.IO.StreamReader(@"C:\UNI\skipgram.txt");
+        System.IO.StreamReader file = new System.IO.StreamReader(inputfile);
         line = file.ReadLine();
 
         string[] subStrings = line.Split(' ');
         count = System.Convert.ToInt32(subStrings[0]);
         dimensionality = System.Convert.ToInt32(subStrings[1]);
 
-        count = 10000;
+        //count = 10000;
+        number_of_neighbours = count - 1;
 
         embeddings = new WordEmbedding[count];
+        double[][] data = new double[count][];
 
         for (int j = 0; j < count; j++)
         {
@@ -80,21 +84,52 @@ public class WordEmbeddingModel : Selectable
             {
                 currentVectors[i] = System.Convert.ToDouble(subStrings[(i + 1)]);
             }
+            data[counter] = currentVectors;
 
             WordEmbedding Target = new WordEmbedding(currentword, currentVectors);
 
-            int id = GetWordembeddingID(Target.GetWord());
-            double[] pcavectors = GetWordembeddingPCA(id);
-
-            Target.SetPCAVectors(pcavectors);
             embeddings[counter] = Target;
 
             counter++;
         }
         file.Close();
-        
+
+        TSNE tSNE = new TSNE()
+        {
+            NumberOfOutputs = 3,
+            Perplexity = 5
+        };
+
+        double[][] finalData = tSNE.Transform(data);
+        counter = 0;
+
+        double[] maxs = { 0, 0, 0 };
+        double[] mins = { 0, 0, 0 };
+
+        for (int j = 0; j < count; j++)
+        {
+            WordEmbedding Target = embeddings[j];
+
+            double[] pcavectors = new double[3];
+            for (int k = 0; k < 3; k++)
+            {
+                pcavectors[k] = finalData[j][k];
+                if (pcavectors[k] > maxs[k])
+                {
+                    maxs[k] = pcavectors[k];
+                }
+                else if (pcavectors[k] < mins[k])
+                {
+                    mins[k] = pcavectors[k];
+                }
+            }
+
+            Target.SetPCAVectors(pcavectors);
+            embeddings[j] = Target;
+        }
+
         // Set intial sample word
-        SetTarget(GetWordEmbedding(word));
+        SetTarget(embeddings[0]);
         Select();
         adjustZoomFromNeighbours();
     }
@@ -306,7 +341,7 @@ public class WordEmbeddingModel : Selectable
             {
                 WordEmbeddingDistance neighbour = NN[i];
                 Boolean flag = false;
-                for (int j = 0; j < k; j++)
+                for (int j = 0; j < k + 1; j++)
                 {
                     // Word already in model
                     if (options[j].GetComponent<Option>().getWord() == NN[i].getWordEmbedding().GetWord())

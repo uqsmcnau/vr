@@ -65,6 +65,7 @@
     <Compile Include="Assets\RW\Scripts\ActionTest.cs" />
     <Compile Include="Assets\RW\Scripts\ControllerGrabObject.cs" />
     <Compile Include="Assets\RW\Scripts\ControllerZoom.cs" />
+    <Compile Include="Assets\RW\Scripts\GridOverlay.cs" />
     <Compile Include="Assets\RW\Scripts\LaserPointer.cs" />
     <Compile Include="Assets\RW\Scripts\LoadEmbedding.cs" />
     <Compile Include="Assets\RW\Scripts\Monitor.cs" />
