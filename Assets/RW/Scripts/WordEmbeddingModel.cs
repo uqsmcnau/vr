@@ -31,7 +31,7 @@ public class WordEmbeddingModel : Selectable
     public GameObject optionPrefab;
     private GameObject[] options;
 
-    private int k = 10;
+    private int k = 19;
     public int number_of_neighbours;
 
     public string inputfile = "C:\\UNI\\australia.txt";
@@ -130,8 +130,8 @@ public class WordEmbeddingModel : Selectable
 
         // Set intial sample word
         SetTarget(embeddings[0]);
-        Select();
         adjustZoomFromNeighbours();
+        CreateGameObjects();
     }
 
     // Update is called once per frame
@@ -194,6 +194,20 @@ public class WordEmbeddingModel : Selectable
 
     private void CreateGameObjects()
     {
+        // Setup Initial state based on sample word
+        preview = false;
+
+        // Create game options
+        options = new GameObject[k + 1];
+
+        //No longer display initial option
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.enabled = false;
+        meshRenderer = text.GetComponent<MeshRenderer>();
+        meshRenderer.enabled = false;
+        BoxCollider boxCollider = GetComponent<BoxCollider>();
+        boxCollider.enabled = false;
+
         WordEmbeddingDistance[] NN = Target.GetNN();
 
         // Create target option
@@ -310,117 +324,31 @@ public class WordEmbeddingModel : Selectable
         transform.position = cameraTransform.position + (cameraTransform.forward * 5);
 
         WordEmbeddingDistance[] NN = Target.GetNN();
-        //adjustZoomFromNeighbours();
-
-        if (preview)
-        {
-            // Setup Initial state based on sample word
-            preview = false;
-
-            // Create game options
-            options = new GameObject[k + 1];
-
-            //No longer display initial option
-            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-            meshRenderer.enabled = false;
-            meshRenderer = text.GetComponent<MeshRenderer>();
-            meshRenderer.enabled = false;
-            BoxCollider boxCollider = GetComponent<BoxCollider>();
-            boxCollider.enabled = false;
-
-            CreateGameObjects();
-        } else
-        {
-            // New word selected so update the model
-            WordEmbeddingDistance[] newWED = new WordEmbeddingDistance[k + 1];
-            WordEmbeddingDistance[] exisitingWED = new WordEmbeddingDistance[k + 1];
-            int countOfNewWords = 0;
-
-            // First sort the kNN into new words and words already existing in the previous model
-            for (int i = 0; i < k; i++)
-            {
-                WordEmbeddingDistance neighbour = NN[i];
-                Boolean flag = false;
-                for (int j = 0; j < k + 1; j++)
-                {
-                    // Word already in model
-                    if (options[j].GetComponent<Option>().getWord() == NN[i].getWordEmbedding().GetWord())
-                    {
-                        flag = true;
-                        exisitingWED[i - countOfNewWords] = neighbour;
-                    }
-                }
-                if (!flag)
-                {
-                    // Word is not in model
-                    newWED[countOfNewWords] = neighbour;
-                    countOfNewWords += 1;
-                }
-            }
-            Vector3 targetCurrentPosition = transform.position;
-
-            // For each option update and move or recreate in model
-            for (int i = 0; i < k + 1; i++)
-            {
-                GameObject option = options[i];
-                Option o = option.GetComponent<Option>();
-
-                // If the word is the target, move towards the centre
-                if (o.getWord() == Target.GetWord())
-                {
-                    o.SetWordEmbedding(Target);
-                    o.SetTargetPosition(transform.position);
-                    targetCurrentPosition = o.transform.position;
-                }
-            }
             
-            // For each option update and move or recreate in model
-            for (int i = 0; i < k + 1; i++)
+        // For each option update and move or recreate in model
+        for (int i = 0; i < k + 1; i++)
+        {
+            GameObject option = options[i];
+            Option o = option.GetComponent<Option>();
+
+            if (o.getWord() == Target.GetWord())
             {
-                GameObject option = options[i];
-                Option o = option.GetComponent<Option>();
+                o.SetTargetPosition(transform.position);
+            }
 
-                if (o.getWord() != Target.GetWord()) {
-                    // Check if the option represents one of the words to be retained
-                    Boolean flag = false;
-                    for (int j = 0; j < k + 1; j++)
+            if (o.getWord() != Target.GetWord()) {
+                // Check if the option represents one of the words to be retained
+                for (int j = 0; j < k; j++)
+                {
+                    // If so move it towards its new location relative to the target word
+                    if (NN[j] != null && NN[j].getWordEmbedding().GetWord() == o.getWord())
                     {
-                        // If so move it towards its new location relative to the target word
-                        if (exisitingWED[j] != null && exisitingWED[j].getWordEmbedding().GetWord() == o.getWord())
-                        {
-                            flag = true;
-                            o.SetWordEmbedding(exisitingWED[j].getWordEmbedding());
-                            o.SetTargetPosition(transform.position + new Vector3(
-                                 (float)(zoom * (Math.Cos(angle) * exisitingWED[j].getPCADistance()[0] - Math.Sin(angle) * exisitingWED[j].getPCADistance()[2])),
-                                 (float)(zoom * exisitingWED[j].getPCADistance()[1]),
-                                 (float)(zoom * (Math.Sin(angle) * exisitingWED[j].getPCADistance()[0] + Math.Cos(angle) * exisitingWED[j].getPCADistance()[2]))));
-                            o.SetVisible();
-                        }
-                    }
-                    if (!flag)
-                    {
-                        // If not, replace it with one of the new words to be modelled
-                        countOfNewWords -= 1;
-
-                        GameObject tempGameObject = Instantiate(optionPrefab);
-                        Option tempOption = tempGameObject.GetComponent<Option>();
-                        tempOption.cam = cam;
-                        tempOption.transform.localScale = new Vector3(scale, scale, scale);
-                        tempOption.SetWordEmbedding(o.GetWordEmbedding());
-                        tempOption.SetPosition(o.transform.position);
-                        tempOption.SetTargetPosition(tempOption.transform.position + transform.position - targetCurrentPosition);
-                        tempOption.StartFadeOut();
-                        
-                        o.SetWordEmbedding(newWED[countOfNewWords].getWordEmbedding());
-                        o.SetPosition(targetCurrentPosition + new Vector3(
-                                (float)(zoom * (Math.Cos(angle) * newWED[countOfNewWords].getPCADistance()[0] - Math.Sin(angle) * newWED[countOfNewWords].getPCADistance()[2])),
-                                (float)(zoom * newWED[countOfNewWords].getPCADistance()[1]),
-                                (float)(zoom * (Math.Sin(angle) * newWED[countOfNewWords].getPCADistance()[0] + Math.Cos(angle) * newWED[countOfNewWords].getPCADistance()[2]))));
+                        //o.SetWordEmbedding(exisitingWED[j].getWordEmbedding());
                         o.SetTargetPosition(transform.position + new Vector3(
-                                 (float)(zoom * (Math.Cos(angle) * newWED[countOfNewWords].getPCADistance()[0] - Math.Sin(angle) * newWED[countOfNewWords].getPCADistance()[2])),
-                                 (float)(zoom * newWED[countOfNewWords].getPCADistance()[1]),
-                                 (float)(zoom * (Math.Sin(angle) * newWED[countOfNewWords].getPCADistance()[0] + Math.Cos(angle) * newWED[countOfNewWords].getPCADistance()[2]))));
-                        o.StartFadeIn();
+                                (float)(zoom * (Math.Cos(angle) * NN[j].getPCADistance()[0] - Math.Sin(angle) * NN[j].getPCADistance()[2])),
+                                (float)(zoom * NN[j].getPCADistance()[1]),
+                                (float)(zoom * (Math.Sin(angle) * NN[j].getPCADistance()[0] + Math.Cos(angle) * NN[j].getPCADistance()[2]))));
+                        o.SetVisible();
                     }
                 }
             }
