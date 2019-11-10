@@ -46,7 +46,7 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/grab"
+                     "output" : "/actions/default/in/teleport"
                   }
                },
                "mode" : "trigger",
@@ -55,7 +55,7 @@
             {
                "inputs" : {
                   "click" : {
-                     "output" : "/actions/default/in/grab"
+                     "output" : "/actions/default/in/teleport"
                   }
                },
                "mode" : "trigger",
@@ -65,12 +65,6 @@
                "inputs" : {
                   "east" : {
                      "output" : "/actions/default/in/zoomin"
-                  },
-                  "north" : {
-                     "output" : "/actions/default/in/pause"
-                  },
-                  "south" : {
-                     "output" : "/actions/default/in/teleport"
                   },
                   "west" : {
                      "output" : "/actions/default/in/zoomout"
@@ -87,12 +81,6 @@
                   "east" : {
                      "output" : "/actions/default/in/zoomin"
                   },
-                  "north" : {
-                     "output" : "/actions/default/in/pause"
-                  },
-                  "south" : {
-                     "output" : "/actions/default/in/teleport"
-                  },
                   "west" : {
                      "output" : "/actions/default/in/zoomout"
                   }
@@ -102,6 +90,24 @@
                   "sub_mode" : "click"
                },
                "path" : "/user/hand/right/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/pause"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/application_menu"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/pause"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/application_menu"
             }
          ]
       },

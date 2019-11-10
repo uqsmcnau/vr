@@ -63,9 +63,9 @@ public class LaserPointer : MonoBehaviour
         // Teleport Mode
         } else if (moveMode == 2)
         {
-            if (moveAction.GetState(handType))
+            if (moveAction.GetStateDown(handType))
             {
-                cameraRigTransform.position += transform.forward;
+                cameraRigTransform.position += (transform.forward * 5);
             }
         }
 
@@ -84,7 +84,7 @@ public class LaserPointer : MonoBehaviour
                 shouldTeleport = false;
                 shouldSelect = true;
             }
-            else if(Physics.Raycast(controllerPose.transform.position, transform.forward, out hit, 100, teleportMask))
+            else if((moveMode == 0) && (Physics.Raycast(controllerPose.transform.position, transform.forward, out hit, 100, teleportMask)))
             {
                 hitPoint = hit.point;
                 ShowLaser(hit);
